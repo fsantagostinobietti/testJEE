@@ -1,0 +1,6 @@
+insert into Language (id, code, greeting) values (1, 'it', 'ciao')
+insert into Language (id, code, greeting) values (2, 'en', 'hello')
+insert into Language (id, code, greeting) values (3, 'es', 'hola')
+insert into Language (id, code, greeting) values (4, 'ro', 'salut')
+insert into Language (id, code, greeting) values (5, 'de', 'hallo')
+insert into Language (id, code, greeting) values (6, 'uk', 'привіт')

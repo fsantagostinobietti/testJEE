@@ -1,0 +1,13 @@
+image: maven:3-jdk-7
+
+build_job:
+  services:
+    - dthuilot/wildfly-admin:latest
+  script:
+    - mvn package -Dmaven.test.skip=true
+    - mvn wildfly:deploy-only -Dmaven.test.skip=true -Dwildfly.hostname=dthuilot__wildfly-admin -Dwildfly.username=admin -Dwildfly.password=Admin#70365 
+    - mvn -DrepoToken=$REPO_TOKEN test -Dwebapp.host=dthuilot__wildfly-admin coveralls:report
+    - cat target/site/jacoco/index.html
+  stage: build
+  
+  

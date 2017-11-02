@@ -1,0 +1,6 @@
+
+web:
+  image: fsantagostinobietti/testjee
+  ports:
+   - "8080:8080"
+

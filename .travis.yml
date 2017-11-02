@@ -1,0 +1,47 @@
+sudo: required
+
+language: java
+
+services:
+  - docker
+
+cache:
+  directories:
+  - $HOME/.m2
+
+env:
+  # Make sure gcloud command is on our PATH and disable prompt for it
+  - PATH=$PATH:${HOME}/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1
+  
+before_install:
+  - ./travis-scripts/install-openshift-cli.sh
+  - ./travis-scripts/install-gcloud-cli.sh
+    
+script:
+  # non-regression tests (unit/integration tests)
+  - mvn test coveralls:report
+  - rm target/surefire-reports/*
+  #
+  # build docker image
+  - mvn package -Dmaven.test.skip=true
+  - docker build -t fsantagostinobietti/testjee .
+  #
+  # deploy container in TEST environment (Heroku actually)
+  - ./travis-scripts/deploy-heroku.sh
+  #
+  # functional tests
+  - docker-compose up -d
+  - sh waitServerToStart.sh
+  - mvn test -P functional-tests && FTEST_OK=true
+  - docker-compose down
+  #
+  # publish image on dockerhub
+  - "[ $FTEST_OK ] && ./travis-scripts/push-to-dockerhub.sh"
+  #
+  # deploy container in QA environment (Openshift actually)
+  - "[ $FTEST_OK ] && ./travis-scripts/notify-openshift.sh"
+  #
+  # notify GoogleCloud image is changed
+  - ./travis-scripts/notify-gcloud.sh
+
+
