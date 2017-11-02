@@ -42,6 +42,6 @@ script:
   - "[ $FTEST_OK ] && ./travis-scripts/notify-openshift.sh"
   #
   # notify GoogleCloud image is changed
-  - ./travis-scripts/notify-gcloud.sh
+  #- ./travis-scripts/notify-gcloud.sh
 
 
